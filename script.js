@@ -1,43 +1,38 @@
-function mincost(ropes) {
-    if (ropes.length === 0) return 0;
+function mincost(arr) {
+    if (!arr.length) return 0;
 
-    // Min-Heap implementation
-    function MinHeap() {
-        this.heap = [];
-    }
-    MinHeap.prototype.insert = function(val) {
-        this.heap.push(val);
-        this.heap.sort((a, b) => a - b);
-    };
-    MinHeap.prototype.remove = function() {
-        return this.heap.shift();
-    };
-    MinHeap.prototype.size = function() {
-        return this.heap.length;
-    };
+    // Convert the list into a min-heap
+    const heap = arr.slice(); // Copy the array
+    heap.sort((a, b) => a - b); // Simple way to simulate a min-heap
 
-    const minHeap = new MinHeap();
-    for (let length of ropes) {
-        minHeap.insert(length);
-    }
+    let total_cost = 0;
 
-    let totalCost = 0;
+    while (heap.length > 1) {
+        // Extract the two smallest elements
+        const first = heap.shift();
+        const second = heap.shift();
 
-    while (minHeap.size() > 1) {
-        let first = minHeap.remove();
-        let second = minHeap.remove();
-        let cost = first + second;
-        totalCost += cost;
-        minHeap.insert(cost);
+        // Combine them
+        const cost = first + second;
+        total_cost += cost;
+
+        // Push the combined rope back into the heap
+        heap.push(cost);
+        heap.sort((a, b) => a - b); // Maintain min-heap property
     }
 
-    return totalCost;
+    return total_cost;
 }
 
-// Function to handle button click and display the result
 function calculateMinCost() {
     const input = document.getElementById('ropeLengths').value;
-    const ropeLengths = input.split(',').map(Number);
-    const result = mincost(ropeLengths);
-    document.getElementById('result').textContent = `Minimum Cost: ${result}`;
+    const lengths = input.split(',').map(Number).filter(n => !isNaN(n));
+
+    if (lengths.length === 0) {
+        document.getElementById('result').innerText = 'Please enter valid lengths.';
+        return;
+    }
+
+    const result = mincost(lengths);
+    document.getElementById('result').innerText = `Minimum cost to connect ropes: ${result}`;
 }
