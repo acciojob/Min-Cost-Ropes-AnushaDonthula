@@ -80,3 +80,9 @@ function calculateMinCost() {
     const result = mincost(lengths);
     document.getElementById('result').innerText = `Minimum cost to connect ropes: ${result}`;
 }
+
+function displayExample() {
+    const exampleLengths = [8, 4, 6, 12, 10];
+    const result = mincost(exampleLengths);
+    document.getElementById('exampleResult').innerText = `Result for example input [8, 4, 6, 12, 10]: ${result}`;
+}
