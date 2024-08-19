@@ -8,26 +8,91 @@ document.getElementById('calculateBtn').addEventListener('click', () => {
     }
 
     const minCost = calculateMinCost(lengths);
-    document.getElementById('result').textContent = `Minimum cost to connect ropes: ${minCost}`;
+    const formattedCost = formatNumber(minCost);
+    document.getElementById('result').textContent = `Minimum cost to connect ropes: ${formattedCost}`;
 });
 
 function calculateMinCost(arr) {
-    const heap = arr.slice();
-    heap.sort((a, b) => a - b);
-    
+    const minHeap = new MinHeap(arr);
     let totalCost = 0;
-    
-    while (heap.length > 1) {
-        const first = heap.shift();
-        const second = heap.shift();
+
+    while (minHeap.size() > 1) {
+        const first = minHeap.remove();
+        const second = minHeap.remove();
         
         const cost = first + second;
         totalCost += cost;
         
-        let i = 0;
-        while (i < heap.length && heap[i] < cost) i++;
-        heap.splice(i, 0, cost);
+        minHeap.insert(cost);
     }
-    
+
     return totalCost;
+}
+
+function formatNumber(number) {
+    return number.toLocaleString();
+}
+
+// MinHeap class definition (same as provided)
+class MinHeap {
+    constructor(arr = []) {
+        this.heap = this.buildHeap(arr);
+    }
+
+    buildHeap(arr) {
+        let parentIdx = Math.floor((arr.length - 2) / 2);
+        for (let currentIdx = parentIdx; currentIdx >= 0; currentIdx--) {
+            this.siftDown(currentIdx, arr.length - 1, arr);
+        }
+        return arr;
+    }
+
+    siftDown(currentIdx, endIdx, heap) {
+        let childOneIdx = currentIdx * 2 + 1;
+        while (childOneIdx <= endIdx) {
+            const childTwoIdx = currentIdx * 2 + 2 <= endIdx ? currentIdx * 2 + 2 : -1;
+            let idxToSwap;
+            if (childTwoIdx !== -1 && heap[childTwoIdx] < heap[childOneIdx]) {
+                idxToSwap = childTwoIdx;
+            } else {
+                idxToSwap = childOneIdx;
+            }
+            if (heap[idxToSwap] < heap[currentIdx]) {
+                [heap[idxToSwap], heap[currentIdx]] = [heap[currentIdx], heap[idxToSwap]];
+                currentIdx = idxToSwap;
+                childOneIdx = currentIdx * 2 + 1;
+            } else {
+                return;
+            }
+        }
+    }
+
+    siftUp(currentIdx, heap) {
+        let parentIdx = Math.floor((currentIdx - 1) / 2);
+        while (currentIdx > 0 && heap[currentIdx] < heap[parentIdx]) {
+            [heap[parentIdx], heap[currentIdx]] = [heap[currentIdx], heap[parentIdx]];
+            currentIdx = parentIdx;
+            parentIdx = Math.floor((currentIdx - 1) / 2);
+        }
+    }
+
+    peek() {
+        return this.heap[0];
+    }
+
+    remove() {
+        [this.heap[0], this.heap[this.heap.length - 1]] = [this.heap[this.heap.length - 1], this.heap[0]];
+        const removed = this.heap.pop();
+        this.siftDown(0, this.heap.length - 1, this.heap);
+        return removed;
+    }
+
+    insert(value) {
+        this.heap.push(value);
+        this.siftUp(this.heap.length - 1, this.heap);
+    }
+
+    size() {
+        return this.heap.length;
+    }
 }
