@@ -1,15 +1,20 @@
-document.getElementById('calculateBtn').addEventListener('click', () => {
-    const input = document.getElementById('ropeLengths').value;
-    const lengths = input.split(',').map(Number).filter(n => !isNaN(n));
-    
-    if (lengths.length === 0) {
-        alert('Please enter valid rope lengths.');
-        return;
-    }
 
-    const minCost = calculateMinCost(lengths);
-    const formattedCost = formatNumber(minCost);
-    document.getElementById('result').textContent = `Minimum cost to connect ropes: ${formattedCost}`;
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('calculateBtn').addEventListener('click', () => {
+        const input = document.getElementById('ropeLengths').value;
+        const lengths = input.split(',')
+                             .map(Number)
+                             .filter(n => !isNaN(n) && n > 0);  // Ensure only positive numbers are allowed
+
+        if (lengths.length < 2) {
+            alert('Please enter at least two valid positive rope lengths.');
+            return;
+        }
+
+        const minCost = calculateMinCost(lengths);
+        const formattedCost = formatNumber(minCost);
+        document.getElementById('result').textContent = `Minimum cost to connect ropes: ${formattedCost}`;
+    });
 });
 
 function calculateMinCost(arr) {
@@ -30,10 +35,14 @@ function calculateMinCost(arr) {
 }
 
 function formatNumber(number) {
-    return number.toLocaleString();
+    if (typeof number.toLocaleString === 'function') {
+        return number.toLocaleString();
+    } else {
+        // Fallback: manually add commas as thousand separators
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 }
 
-// MinHeap class definition (same as provided)
 class MinHeap {
     constructor(arr = []) {
         this.heap = this.buildHeap(arr);
