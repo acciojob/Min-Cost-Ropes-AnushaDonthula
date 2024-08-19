@@ -1,19 +1,20 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Min Cost Ropes</title>
+    <title>Min Cost to Connect Ropes</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <h1>Min Cost to Connect Ropes</h1>
-        <form id="ropeForm">
-            <label for="ropes">Enter rope lengths (comma separated):</label>
-            <input type="text" id="ropes" name="ropes" required>
-            <button type="submit">Calculate</button>
-        </form>
+        <div>
+            <label for="ropeLengths">Enter Rope Lengths (comma-separated):</label>
+            <input type="text" id="ropeLengths" placeholder="e.g. 4, 3, 2, 6">
+        </div>
+        <button id="calculateBtn">Calculate Min Cost</button>
         <div id="result"></div>
     </div>
     <script src="script.js"></script>
